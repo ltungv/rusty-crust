@@ -26,9 +26,9 @@ impl<T> Mutex<T> {
     {
         // With ordering [`Relaxed`], there is no gurantee that the value you receive is in order
         // with the operations performed by other thread.
-        // The [`Acquire`] and [`Release`] pair of memory ordering ensures that any operation before
-        // one thread releases a memory location is observed by the thread that subsequently acquires
-        // the same memory location
+        // The [`Acquire`] and [`Release`] pair of memory ordering ensures that any operation
+        // before one thread releases a memory location is observed by the thread that subsequently
+        // acquires the same memory location
         while self
             .locked
             .compare_exchange_weak(UNLOCKED, LOCKED, Ordering::AcqRel, Ordering::Relaxed)
