@@ -20,15 +20,20 @@ impl<T> Mutex<T> {
         }
     }
 
-    pub fn with_lock<R>(&self, f: impl FnOnce(&mut T) -> R) -> R {
+    pub fn with_lock<F, R>(&self, f: F) -> R
+    where
+        F: FnOnce(&mut T) -> R,
+    {
+        // With ordering [`Relaxed`], there is no gurantee that the value you receive is in order
+        // with the operations performed by other thread.
+        // The [`Acquire`] and [`Release`] pair of memory ordering ensures that any operation before
+        // one thread releases a memory location is observed by the thread that subsequently acquires
+        // the same memory location
         while self
             .locked
-            .compare_exchange_weak(UNLOCKED, LOCKED, Ordering::Relaxed, Ordering::Relaxed)
+            .compare_exchange_weak(UNLOCKED, LOCKED, Ordering::AcqRel, Ordering::Relaxed)
             .is_err()
         {
-            // MESI procotocol
-            while self.locked.load(Ordering::Relaxed) == LOCKED {}
-
             // compare_exchange_weak might fail even if the value matches that one
             // that we give
             // x86: Compare-and-swap
@@ -40,11 +45,14 @@ impl<T> Mutex<T> {
             //      - compare_exchange in rust becomes a nested loop on ARM, this
             //      leads to generally less efficient code
             //  - compare_exchange_weak: LDREX STREX
+
+            // MESI procotocol
+            while self.locked.load(Ordering::Relaxed) == LOCKED {}
         }
 
         // SAFETY: We are holding a lock
         let rtr = f(unsafe { &mut *self.v.get() });
-        self.locked.store(UNLOCKED, Ordering::Relaxed);
+        self.locked.store(UNLOCKED, Ordering::Release);
         rtr
     }
 }
