@@ -65,7 +65,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn concurrent_add() {
+    fn concurrent_mutex_add() {
         const N_THREADS: usize = 100;
         const N_ITER: usize = 100;
 
@@ -91,7 +91,9 @@ mod tests {
         assert_eq!(l.with_lock(|v| *v), N_THREADS * N_ITER);
     }
 
-    fn _example_too_relaxed() {
+    #[test]
+    #[ignore]
+    fn too_relaxed() {
         use std::sync::atomic::AtomicUsize;
 
         let x: &'static _ = Box::leak(Box::new(AtomicUsize::new(0)));
