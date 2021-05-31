@@ -9,6 +9,7 @@ pub struct Mutex<T> {
     v: UnsafeCell<T>,
 }
 
+// SAFETY: We know that mutex is [`Sync`] if the value of type `T` is [`Send`]
 unsafe impl<T> Sync for Mutex<T> where T: Send {}
 
 impl<T> Mutex<T> {
@@ -20,9 +21,27 @@ impl<T> Mutex<T> {
     }
 
     pub fn with_lock<R>(&self, f: impl FnOnce(&mut T) -> R) -> R {
-        // naive method: spin lock
-        while self.locked.load(Ordering::Relaxed) != UNLOCKED {}
-        self.locked.store(LOCKED, Ordering::Relaxed);
+        while self
+            .locked
+            .compare_exchange_weak(UNLOCKED, LOCKED, Ordering::Relaxed, Ordering::Relaxed)
+            .is_err()
+        {
+            // MESI procotocol
+            while self.locked.load(Ordering::Relaxed) == LOCKED {}
+
+            // compare_exchange_weak might fail even if the value matches that one
+            // that we give
+            // x86: Compare-and-swap
+            // ARM: LDREX STREX
+            //  - this is a 2-step operation
+            //      - LDREX take exclusive access and load the value
+            //      - STREX store the value iff the thread still has exclusve access to the value
+            //  - compare_exchange: implemetation using loop { LDREX STREX }
+            //      - compare_exchange in rust becomes a nested loop on ARM, this
+            //      leads to generally less efficient code
+            //  - compare_exchange_weak: LDREX STREX
+        }
+
         // SAFETY: We are holding a lock
         let rtr = f(unsafe { &mut *self.v.get() });
         self.locked.store(UNLOCKED, Ordering::Relaxed);
