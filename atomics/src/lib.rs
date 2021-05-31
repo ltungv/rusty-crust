@@ -65,6 +65,56 @@ mod tests {
     use super::*;
 
     #[test]
+    fn example_seqcst_vs_acqrel() {
+        use std::sync::atomic::{AtomicBool, AtomicUsize};
+
+        let x: &'static _ = Box::leak(Box::new(AtomicBool::new(false)));
+        let y: &'static _ = Box::leak(Box::new(AtomicBool::new(false)));
+        let z: &'static _ = Box::leak(Box::new(AtomicUsize::new(0)));
+
+        let _tx = std::thread::spawn(move || {
+            x.store(true, Ordering::SeqCst);
+        });
+        let _ty = std::thread::spawn(move || {
+            y.store(true, Ordering::SeqCst);
+        });
+        let t1 = std::thread::spawn(move || {
+            while !x.load(Ordering::SeqCst) {}
+            if y.load(Ordering::SeqCst) {
+                z.fetch_add(1, Ordering::Relaxed);
+            }
+        });
+        let t2 = std::thread::spawn(move || {
+            while !y.load(Ordering::SeqCst) {}
+            if x.load(Ordering::SeqCst) {
+                z.fetch_add(1, Ordering::Relaxed);
+            }
+        });
+
+        // What are the possible value for z?
+        // - Is 0 possible?
+        //   Restrictions:
+        //      t1 must run after tx
+        //      t2 must run after ty
+        //   + This outcome seems impossible, according to the thread schedule
+        //   + t1 guarantees to observe the effect of tx but does not guarantee to observe the
+        //   effect of ty, similarly t2 guarantees to observe the effect of ty but does not
+        //   guarantee to observe the effect of tx.
+        //   + This outcome is possible
+        //   + Using SeqCst to ensure all threads observer to same sequence of events
+        //
+        // - Is 1 possible?
+        //   YES: tx, t1, ty, t2
+        // - Is 2 possible?
+        //   YES: tx, ty, t1, t2
+
+        t1.join().unwrap();
+        t2.join().unwrap();
+        let zz = z.load(Ordering::SeqCst);
+        assert_ne!(zz, 0);
+    }
+
+    #[test]
     fn concurrent_mutex_add() {
         const N_THREADS: usize = 100;
         const N_ITER: usize = 100;
