@@ -2,7 +2,7 @@
 
 use std::cell::UnsafeCell;
 
-/// Cell unable interior mutability
+/// Cell enable interior mutability
 pub struct Cell<T> {
     // This has to be an UnsafeCell so that it can be mutated through a shared reference
     value: UnsafeCell<T>,
