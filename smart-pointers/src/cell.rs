@@ -5,6 +5,9 @@ pub struct Cell<T> {
     value: UnsafeCell<T>,
 }
 
+// This can not be shared across multiple threads, implied by containing an UnsafeCell
+// impl<T> !Sync for Cell<T> {}
+
 impl<T> Cell<T> {
     pub fn new(value: T) -> Self {
         Cell {
@@ -13,12 +16,27 @@ impl<T> Cell<T> {
     }
 
     pub fn set(&self, value: T) {
-        // SAFETY: This is not okay, nothing ensures that this value can be mutated
+        // SAFETY: The value is not accessed concurrently by multiple threads (!Sync)
+        // SAFETY: No reference to the underlying value was given out, set does not invalidate any
+        // existing reference
         unsafe { *self.value.get() = value };
     }
 
-    pub fn get(&self) -> T {
-        // SAFETY: This is not okay, nothing ensures that this returns the latest value
+    pub fn get(&self) -> T
+    where
+        T: Copy,
+    {
+        // SAFETY: The value is not accessed concurrently by multiple threads (!Sync)
         unsafe { *self.value.get() }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        Cell::new(0);
     }
 }

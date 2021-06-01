@@ -1,10 +1,3 @@
 pub mod cell;
+pub mod refcell;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn it_works() {
-        cell::Cell::new(0);
-    }
-}
