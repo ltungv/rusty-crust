@@ -56,7 +56,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let list: DoublyLinkedList<u32> = DoublyLinkedList::new();
     /// ```
@@ -79,7 +79,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut list1 = DoublyLinkedList::new();
     /// list1.push_back('a');
@@ -129,7 +129,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut list: DoublyLinkedList<u32> = DoublyLinkedList::new();
     ///
@@ -155,7 +155,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut list: DoublyLinkedList<u32> = DoublyLinkedList::new();
     ///
@@ -187,7 +187,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     /// assert!(dl.is_empty());
@@ -206,7 +206,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     ///
@@ -230,7 +230,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     ///
@@ -253,7 +253,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut list: DoublyLinkedList<u32> = DoublyLinkedList::new();
     ///
@@ -287,7 +287,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     /// assert_eq!(dl.front(), None);
@@ -312,7 +312,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     /// assert_eq!(dl.front(), None);
@@ -341,7 +341,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     /// assert_eq!(dl.back(), None);
@@ -366,7 +366,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     /// assert_eq!(dl.back(), None);
@@ -398,7 +398,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut dl = DoublyLinkedList::new();
     ///
@@ -442,7 +442,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut d = DoublyLinkedList::new();
     /// assert_eq!(d.pop_front(), None);
@@ -478,7 +478,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut d = DoublyLinkedList::new();
     /// d.push_back(1);
@@ -520,7 +520,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut d = DoublyLinkedList::new();
     /// assert_eq!(d.pop_back(), None);
@@ -558,7 +558,7 @@ impl<T> DoublyLinkedList<T> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::DoublyLinkedList;
+    /// use rusty_crust::collections::DoublyLinkedList;
     ///
     /// let mut d = DoublyLinkedList::new();
     ///
@@ -618,7 +618,7 @@ impl<T> DoublyLinkedList<T> {
 /// This struct is created by [`DoublyLinkedList::iter()`]. See its
 /// documentation for more.
 ///
-/// [`DoublyLinkedList::iter()`]: crate::containers::DoublyLinkedList#iter;
+/// [`DoublyLinkedList::iter()`]: crate::collections::DoublyLinkedList#iter;
 #[derive(Debug)]
 pub struct Iter<'a, T> {
     it: Option<NonNull<Node<T>>>,
@@ -645,7 +645,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
 /// This struct is created by [`DoublyLinkedList::iter_mut()`]. See its
 /// documentation for more.
 ///
-/// [`DoublyLinkedList::iter_mut()`]: crate::containers::DoublyLinkedList#iter_mut;
+/// [`DoublyLinkedList::iter_mut()`]: crate::collections::DoublyLinkedList#iter_mut;
 #[derive(Debug)]
 pub struct IterMut<'a, T> {
     it: Option<NonNull<Node<T>>>,

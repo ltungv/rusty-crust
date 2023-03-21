@@ -31,7 +31,7 @@ use std::ops::Index;
 /// These examples are taken from Rust's standard library.
 ///
 /// ```
-/// use dt::containers::LinkedHashMap;
+/// use rusty_crust::collections::LinkedHashMap;
 ///
 /// // Type inference lets us omit an explicit type signature (which
 /// // would be `LinkedHashMap<String, String>` in this example).
@@ -89,7 +89,7 @@ use std::ops::Index;
 /// We must also derive [`PartialEq`].
 ///
 /// ```
-/// use dt::containers::LinkedHashMap;
+/// use rusty_crust::collections::LinkedHashMap;
 ///
 /// #[derive(Hash, Eq, PartialEq, Debug)]
 /// struct Viking {
@@ -121,7 +121,7 @@ use std::ops::Index;
 /// methods of getting, setting, updating and removing keys and their values:
 ///
 /// ```
-/// use dt::containers::LinkedHashMap;
+/// use rusty_crust::collections::LinkedHashMap;
 ///
 /// // type inference lets us omit an explicit type signature (which
 /// // would be `LinkedHashMap<&str, u8>` in this example).
@@ -149,7 +149,7 @@ use std::ops::Index;
 /// array.
 ///
 /// ```
-/// use dt::containers::LinkedHashMap;
+/// use rusty_crust::collections::LinkedHashMap;
 ///
 /// let timber_resources: LinkedHashMap<&str, i32> =
 ///     [("Norway", 100), ("Denmark", 50), ("Iceland", 10)]
@@ -171,7 +171,7 @@ pub struct LinkedHashMap<K, V, S = RandomState> {
 /// A data item that holds entries in [`LinkedHashMap`] whose key is hashed to
 /// the same value.
 ///
-/// [`LinkedHashMap`]: crate::containers::LinkedHashMap
+/// [`LinkedHashMap`]: crate::collections::LinkedHashMap
 #[derive(Debug)]
 struct Bucket<K, V> {
     items: Vec<(K, V)>,
@@ -212,7 +212,7 @@ impl<K, V> LinkedHashMap<K, V, RandomState> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     /// let mut map: LinkedHashMap<&str, i32> = LinkedHashMap::new();
     /// ```
     pub fn new() -> Self {
@@ -226,7 +226,7 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     ///
     /// let mut a = LinkedHashMap::new();
     /// assert_eq!(a.len(), 0);
@@ -242,7 +242,7 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     ///
     /// let mut a = LinkedHashMap::new();
     /// assert!(a.is_empty());
@@ -270,7 +270,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     ///
     /// let mut map = LinkedHashMap::new();
     /// assert_eq!(map.insert(37, "a"), None);
@@ -308,7 +308,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     /// let mut map = LinkedHashMap::new();
     /// map.insert(1, "a");
     /// assert_eq!(map.get(&1), Some(&"a"));
@@ -336,7 +336,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     ///
     /// let mut map = LinkedHashMap::new();
     /// map.insert(1, "a");
@@ -415,7 +415,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use dt::containers::LinkedHashMap;
+    /// use rusty_crust::collections::LinkedHashMap;
     ///
     /// let mut map = LinkedHashMap::new();
     /// map.insert(1, "a");
@@ -505,7 +505,7 @@ where
 
 /// An iterator over the elements of a [`LinkedHashMap`].
 ///
-/// [`LinkedHashMap`]: crate::containers::LinkedHashMap
+/// [`LinkedHashMap`]: crate::collections::LinkedHashMap
 #[derive(Debug)]
 pub struct Iter<'a, K, V, S> {
     map: &'a LinkedHashMap<K, V, S>,
@@ -549,7 +549,7 @@ impl<'a, K, V, S> IntoIterator for &'a LinkedHashMap<K, V, S> {
 
 /// An iterator over the elements of a [`LinkedHashMap`].
 ///
-/// [`LinkedHashMap`]: crate::containers::LinkedHashMap
+/// [`LinkedHashMap`]: crate::collections::LinkedHashMap
 #[derive(Debug)]
 pub struct IntoIter<K, V, S> {
     map: LinkedHashMap<K, V, S>,
