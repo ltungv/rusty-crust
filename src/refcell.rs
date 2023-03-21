@@ -112,3 +112,52 @@ impl<T> DerefMut for RefMut<'_, T> {
         unsafe { &mut *self.refcell.value.get() }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::RefCell;
+
+    #[test]
+    fn borrow_mut_returns_none_when_borrow_is_alive() {
+        let cell = RefCell::new("test");
+        let c1 = cell.borrow();
+        let c2 = cell.borrow_mut();
+        assert!(matches!(c1, Some(_)));
+        assert!(matches!(c2, None));
+    }
+
+    #[test]
+    fn borrow_mut_points_to_valid_data() {
+        let cell = RefCell::new("test");
+        let c = cell.borrow_mut().unwrap();
+        assert_eq!("test", *c);
+    }
+
+    #[test]
+    fn borrow_mut_can_mutate_referenced_data() {
+        let cell = RefCell::new("test");
+        {
+            let mut c = cell.borrow_mut().unwrap();
+            assert_eq!("test", *c);
+            *c = "hello";
+        }
+        let c = cell.borrow().unwrap();
+        assert_eq!("hello", *c);
+    }
+
+    #[test]
+    fn borrow_returns_none_when_borrow_mut_is_alive() {
+        let cell = RefCell::new("test");
+        let c1 = cell.borrow_mut();
+        let c2 = cell.borrow();
+        assert!(matches!(c1, Some(_)));
+        assert!(matches!(c2, None));
+    }
+
+    #[test]
+    fn borrow_points_to_valid_data() {
+        let cell = RefCell::new("test");
+        let c = cell.borrow().unwrap();
+        assert_eq!("test", *c);
+    }
+}
