@@ -1,24 +1,28 @@
-//! Enabling the borrow checker at runtime
+//! Structure that enables the borrow checker at runtime.
 
 use crate::cell::Cell;
-use std::ops::DerefMut;
-use std::{cell::UnsafeCell, ops::Deref};
+use std::{
+    cell::UnsafeCell,
+    ops::{Deref, DerefMut},
+};
 
-#[derive(Clone, Copy)]
+/// The state of the reference cell. This is used for checking if a borrow is possible.
+#[derive(Debug, Clone, Copy)]
 enum RefState {
     Unshared,
     Shared(usize),
     Exclusive,
 }
 
-/// A smart pointer that ensures the borrow checker at runtime
+/// A smart pointer that ensures the borrow checker semantics at runtime.
+#[derive(Debug)]
 pub struct RefCell<T> {
     value: UnsafeCell<T>,
     state: Cell<RefState>,
 }
 
 impl<T> RefCell<T> {
-    /// Create a smart pointer to the given value
+    /// Create a smart pointer to the given value.
     pub fn new(value: T) -> Self {
         Self {
             value: UnsafeCell::new(value),
@@ -26,7 +30,7 @@ impl<T> RefCell<T> {
         }
     }
 
-    /// Borrow the inner value if no exclusive access has been given out
+    /// Borrow the inner value if no exclusive access has been given out.
     pub fn borrow(&self) -> Option<Ref<'_, T>> {
         match self.state.get() {
             RefState::Unshared => {
@@ -41,7 +45,7 @@ impl<T> RefCell<T> {
         }
     }
 
-    /// Take exclusive access to the inner value
+    /// Take exclusive access to the inner value if it hasn't been borrowed.
     pub fn borrow_mut(&self) -> Option<RefMut<'_, T>> {
         if let RefState::Unshared = self.state.get() {
             self.state.set(RefState::Exclusive);
@@ -52,7 +56,8 @@ impl<T> RefCell<T> {
     }
 }
 
-/// A shared reference to a `RefCell`
+/// A shared reference to a `RefCell`.
+#[derive(Debug)]
 pub struct Ref<'refcell, T> {
     refcell: &'refcell RefCell<T>,
 }
@@ -70,14 +75,14 @@ impl<T> Drop for Ref<'_, T> {
 impl<T> Deref for Ref<'_, T> {
     type Target = T;
     fn deref(&self) -> &Self::Target {
-        // SAFETY: A `Ref` only exists if no exclusive access to the inner value has been given
-        // out, once a `Ref` is created, no exclusive will be given out. Hence, dereferencing into
-        // a shared reference is ok.
+        // SAFETY: A `Ref` only exists if no exclusive access to the inner value
+        // has been given out. Hence, dereferencing into a immutable reference is ok.
         unsafe { &*self.refcell.value.get() }
     }
 }
 
-/// An exclusive reference to a `RefCell`
+/// An exclusive reference to a `RefCell`.
+#[derive(Debug)]
 pub struct RefMut<'refcell, T> {
     refcell: &'refcell RefCell<T>,
 }
@@ -94,16 +99,16 @@ impl<T> Drop for RefMut<'_, T> {
 impl<T> Deref for RefMut<'_, T> {
     type Target = T;
     fn deref(&self) -> &Self::Target {
-        // SAFETY: See safety for `DerefMut`
+        // SAFETY: A `RefMut` only exists if no reference to the inner value
+        // has been given out. Hence, dereferencing into a immutable reference is ok.
         unsafe { &*self.refcell.value.get() }
     }
 }
 
 impl<T> DerefMut for RefMut<'_, T> {
     fn deref_mut(&mut self) -> &mut <Self as Deref>::Target {
-        // SAFETY: A `RefMMut` only exists if no reference to the inner value has been given out,
-        // once a `RefMut` is created, no future reference will be given out. Hence, dereferencing
-        // into a mutable reference is ok.
+        // SAFETY: A `RefMut` only exists if no reference to the inner value
+        // has been given out. Hence, dereferencing into a mutable reference is ok.
         unsafe { &mut *self.refcell.value.get() }
     }
 }

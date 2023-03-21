@@ -1,8 +1,8 @@
 [package]
-name = "smart-pointers"
+name = "rusty-crust"
 version = "0.1.0"
 authors = ["Vo Le Tung <15053897+letung3105@users.noreply.github.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -4,6 +4,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 const LOCKED: bool = true;
 const UNLOCKED: bool = false;
 
+/// A structure for providing mutually exclusive access to shared data.
+#[derive(Debug)]
 pub struct Mutex<T> {
     locked: AtomicBool,
     v: UnsafeCell<T>,
@@ -13,6 +15,7 @@ pub struct Mutex<T> {
 unsafe impl<T> Sync for Mutex<T> where T: Send {}
 
 impl<T> Mutex<T> {
+    /// Wrap the given value in a `Mutex` to provide safe concurrent accesses from multiple threads.
     pub fn new(t: T) -> Self {
         Self {
             locked: AtomicBool::new(UNLOCKED),
@@ -20,6 +23,7 @@ impl<T> Mutex<T> {
         }
     }
 
+    /// Acquire exlusive access and perform an action on a mutable reference to the inner value.
     pub fn with_lock<F, R>(&self, f: F) -> R
     where
         F: FnOnce(&mut T) -> R,
@@ -30,7 +34,7 @@ impl<T> Mutex<T> {
             .is_err()
         {
             while self.locked.load(Ordering::Relaxed) == LOCKED {
-                // MESI procotocol
+                std::hint::spin_loop()
             }
 
             // compare_exchange_weak might fail even if the value matches that one that we give
